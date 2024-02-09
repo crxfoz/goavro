@@ -6,7 +6,7 @@ import (
 	"os"
 	"reflect"
 
-	"github.com/linkedin/goavro/v2"
+	"github.com/crxfoz/goavro/v2"
 )
 
 var (
@@ -20,7 +20,7 @@ func init() {
 		panic(err)
 	}
 
-	//Create Schema Once
+	// Create Schema Once
 	codec, err = goavro.NewCodec(string(schema))
 	if err != nil {
 		panic(err)
@@ -29,7 +29,7 @@ func init() {
 
 func main() {
 
-	//Sample Data
+	// Sample Data
 	user := &User{
 		FirstName: "John",
 		LastName:  "Snow",
@@ -43,19 +43,19 @@ func main() {
 
 	fmt.Printf("user in=%+v\n", user)
 
-	///Convert Binary From Native
+	// /Convert Binary From Native
 	binary, err := codec.BinaryFromNative(nil, user.ToStringMap())
 	if err != nil {
 		panic(err)
 	}
 
-	///Convert Native from Binary
+	// /Convert Native from Binary
 	native, _, err := codec.NativeFromBinary(binary)
 	if err != nil {
 		panic(err)
 	}
 
-	//Convert it back tp Native
+	// Convert it back tp Native
 	userOut := StringMapToUser(native.(map[string]interface{}))
 	fmt.Printf("user out=%+v\n", userOut)
 	if ok := reflect.DeepEqual(user, userOut); !ok {
@@ -107,7 +107,7 @@ func (u *User) ToStringMap() map[string]interface{} {
 			addDatum["Address2"] = goavro.Union("null", nil)
 		}
 
-		//important need namespace and record name
+		// important need namespace and record name
 		datumIn["Address"] = goavro.Union("my.namespace.com.address", addDatum)
 
 	} else {
@@ -138,7 +138,7 @@ func StringMapToUser(data map[string]interface{}) *User {
 			}
 		case "Address":
 			if vmap, ok := v.(map[string]interface{}); ok {
-				//important need namespace and record name
+				// important need namespace and record name
 				if cookieSMap, ok := vmap["my.namespace.com.address"].(map[string]interface{}); ok {
 					add := &Address{}
 					for k, v := range cookieSMap {
